@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer src="/bootstrap/js/bootstrap.bundle.js"></script>
+    <title>Subir imágenes al servidor</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>Black and White Spa</h1>
+    </header>
+
+    <main>
+        <section>
+            <!-- Corregir el formulario anidado -->
+            <form id="uploadForm" action="/process-image" method="post">
+                <label for="imagen">URL de la Imagen:</label>
+                <input type="text" id="imagen" name="imagen" required>
+                <br>
+                <button type="submit">Subir Imagen</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        let formImagen = document.getElementById("uploadForm");
+
+        formImagen.addEventListener("submit", async (event) => {
+            try {
+                event.preventDefault();
+
+                const imagenUrl = document.getElementById("imagen").value;
+
+                const response = await fetch("/process-image", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ imagen: imagenUrl }),
+                });
+
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    const data = await response.json();
+                    alert(data.message);
+                }
+            } catch (error) {
+                alert("Error al intentar cargar la imagen.");
+            }
+        });
+    </script>
+    <style>
+        body {
+            background-color: rgb(255, 0, 0);
+        }
+
+        body h1,
+        h2,
+        label {
+            color: white;
+        }
+    </style>
+</body>
+
+</html>
